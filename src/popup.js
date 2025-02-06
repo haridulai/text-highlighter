@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+    let highlightList = document.getElementById("highlightList");
+
     chrome.storage.local.get("highlights", (data) => {
-        let highlightList = document.getElementById("highlightList");
-        highlightList.innerHTML = "";
+        highlightList.innerHTML = ""; // Clear before rendering new highlights
+
         (data.highlights || []).forEach((item) => {
             let div = document.createElement("div");
             div.className = "highlight-item";

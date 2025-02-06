@@ -1,0 +1,19 @@
+#highlightMenu {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    display: none;
+    z-index: 1000;
+    border-radius: 5px;
+}
+
+#highlightMenu button {
+    background: #f0f0f0;
+    border: none;
+    margin: 2px;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
