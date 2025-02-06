@@ -1,4 +1,3 @@
-// Create the floating menu only once
 let highlightMenu = document.createElement("div");
 highlightMenu.id = "highlightMenu";
 highlightMenu.style.position = "absolute";
@@ -38,6 +37,7 @@ function hideHighlightMenu() {
     highlightMenu.style.display = "none";
 }
 
+// Add event listeners for buttons
 document.getElementById("highlightBtn").addEventListener("click", () => {
     highlightSelectedText("yellow");
     hideHighlightMenu();
@@ -48,6 +48,7 @@ document.getElementById("copyBtn").addEventListener("click", () => {
     hideHighlightMenu();
 });
 
+// Function to highlight and store text
 function highlightSelectedText(color) {
     let selection = window.getSelection();
     if (selection.rangeCount > 0) {
@@ -58,20 +59,43 @@ function highlightSelectedText(color) {
         range.deleteContents();
         range.insertNode(span);
 
-        saveHighlightedText(selection.toString(), color);
+        saveHighlightedText(span.textContent, color);
     }
 }
 
+// Copy selected text
 function copySelectedText() {
     navigator.clipboard.writeText(selectedText).then(() => {
         alert("Copied to clipboard!");
     });
 }
 
+// Save highlighted text persistently
 function saveHighlightedText(text, color) {
     chrome.storage.local.get({ highlights: [] }, (data) => {
         let highlights = data.highlights;
-        highlights.push({ text, color });
+        highlights.push({ text, color, url: window.location.href });
         chrome.storage.local.set({ highlights });
     });
 }
+
+// Load highlights on page refresh
+function loadHighlights() {
+    chrome.storage.local.get("highlights", (data) => {
+        (data.highlights || []).forEach((item) => {
+            if (item.url === window.location.href) {
+                applyHighlight(item.text, item.color);
+            }
+        });
+    });
+}
+
+// Reapply highlights to the page
+function applyHighlight(text, color) {
+    let bodyText = document.body.innerHTML;
+    let highlightedText = `<span style="background-color:${color};">${text}</span>`;
+    document.body.innerHTML = bodyText.replace(text, highlightedText);
+}
+
+// Run on page load
+window.onload = loadHighlights;
